@@ -18,6 +18,9 @@
         INNER JOIN tipo_propiedad ON propiedades.id_type = tipo_propiedad.id_type 
         WHERE 1=1"; // El "1=1" facilita agregar condiciones dinámicas
 
+    $id_operation = isset($_GET['id_operation']) ? intval($_GET['id_operation']) : 0;
+    $id_type = isset($_GET['id_type']) ? intval($_GET['id_type']) : 0;
+
     // Condiciones dinámicas
     if (!empty($busqueda)) {
     $consulta_datos .= " AND (propiedades.title LIKE '%$busqueda%' 
@@ -38,14 +41,25 @@
     }
 
     if (isset($id_operation) && $id_operation > 0) {
-    $consulta_datos .= " AND propiedades.id_operation = '$id_operation'";
-    $consulta_total .= " AND propiedades.id_operation = '$id_operation'";
+    $consulta_datos .= " AND propiedades.id_operation = $id_operation";
+    $consulta_total .= " AND propiedades.id_operation = $id_operation";
     }
 
     if (isset($id_type) && $id_type > 0) {
-    $consulta_datos .= " AND propiedades.id_type = '$id_type'";
-    $consulta_total .= " AND propiedades.id_type = '$id_type'";
+    $consulta_datos .= " AND propiedades.id_type = $id_type";
+    $consulta_total .= " AND propiedades.id_type = $id_type";
     }
+
+    // Agregar filtro de precio
+    $price_min = isset($_GET['price_min']) ? floatval($_GET['price_min']) : 0;
+    $price_max = isset($_GET['price_max']) ? floatval($_GET['price_max']) : 300000;
+
+    // Agregar condiciones a las consultas
+    if ($price_min > 0 || $price_max < 300000) {
+        $consulta_datos .= " AND propiedades.value BETWEEN $price_min AND $price_max";
+        $consulta_total .= " AND propiedades.value BETWEEN $price_min AND $price_max";
+    }
+
 
     // Ordenar y limitar resultados
     $consulta_datos .= " ORDER BY propiedades.title ASC LIMIT $inicio, $registros";

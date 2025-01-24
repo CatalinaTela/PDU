@@ -48,37 +48,190 @@ $id = (isset($_GET['id_property_view'])) ? $_GET['id_property_view'] : 0;
                 <div class="column is-half">
                     <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3476.9558109071627!2d-66.34241857118006!3d-33.28432508428671!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2sar!4v1645188876080!5m2!1ses-419!2sar" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                 </div>
-        
-        <div class="column">
-            <h2> Galeria </h2>
-            <div>
-                <!-- Foto principal -->
-                <div id="fotoGrande">
-                    <img src="<?php echo $num_foto; ?>" alt="Imagen propiedad">  
+        <!-- Galeria de imagenes -->
+        <div class="gallery-container">
+            <h2 class="title">Galería de Imágenes</h2>
+            
+            <!-- Contenedor de Imagen Principal -->
+            <div class="main-image-container mb-4">
+                <img 
+                    src="<?php echo $num_foto ?: $images[0]; ?>" 
+                    alt="Imagen Principal" 
+                    id="main-gallery-image"
+                    class="main-image is-fullwidth"
+                    style="max-height: 500px; object-fit: cover;"
+                >
+            </div>
+
+            <!-- Contenedor de Miniaturas con Scroll Horizontal -->
+            <div class="thumbnails-wrapper">
+                <div class="image-gallery" id="thumbnails-container">
+                    <?php foreach ($images as $indice => $img) { ?>
+                        <div 
+                            class="gallery-item" 
+                            data-index="<?php echo $indice; ?>"
+                            data-src="<?php echo $img; ?>"
+                        >
+                            <img 
+                                src="<?php echo $img; ?>" 
+                                alt="Imagen <?php echo $indice + 1; ?>" 
+                                class="thumbnail"
+                            >
+                        </div>
+                    <?php } ?>
                 </div>
-                <div>
-                        <!-- Galeria -->   
-                        <?php foreach ($images as $indice=>$img) { 
-                            echo '<a href="index.php?vista=publicacion&id_property_view=' . $datos['id_property'] . ' &num_foto=' . $img . '"    >';
-                            echo '<img  src=" '. $img .'" width="100" height="121"  /> ';
-                            echo '</a>';
-                        } ?>    
-                </div> 
-        </div>  
-        <div class="column">
-            <!-- Carusel 
-            <div class="carousel" data-autoplay="true" data-loop="true">
-             <?php foreach ($images as $img) { ?>
-                    <div class="item-1">
-                        <figure class="image is-3by2">
-                            <img src="<?php echo $img; ?>" alt="Imagen propiedad">
-                        </figure>
-                    </div>
-                <?php } ?>
-            </div> -->
-        </div>      
-    </form>
-    </div>    
+                
+                <!-- Flechas de Navegación 
+                <div class="gallery-nav-buttons">
+                    <button id="scroll-left" class="nav-button">&#10094;</button>
+                    <button id="scroll-right" class="nav-button">&#10095;</button>
+                </div>  -->
+            </div>
+        </div>
+
+        <style>
+        .gallery-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #e8c379c3;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .main-image-container {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .main-image-container:hover {
+            transform: scale(1.01);
+        }
+
+        .main-image {
+            max-width: 100%; 
+            max-height: 80vh; 
+            object-fit: contain; 
+            cursor: zoom-in; 
+            transition: transform 0.3s ease;
+        }
+
+        .thumbnails-wrapper {
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+            background-color:rgba(220, 130, 33, 0.61);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .image-gallery {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 10px 0;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .gallery-item {
+            flex: 0 0 auto;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .thumbnail {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border: 3px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .thumbnail.active, .gallery-item:hover .thumbnail {
+            border-color: #8c280e;
+        }
+
+        .title {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        </style>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainImage = document.getElementById('main-gallery-image');
+            const thumbnailsContainer = document.getElementById('thumbnails-container');
+            const scrollLeftBtn = document.getElementById('scroll-left');
+            const scrollRightBtn = document.getElementById('scroll-right');
+            const galleryItems = document.querySelectorAll('.gallery-item');
+
+            // Cambiar imagen principal al hacer click
+            galleryItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    // Remover clase active de todos
+                    galleryItems.forEach(g => g.querySelector('.thumbnail').classList.remove('active'));
+                    
+                    // Agregar clase active al actual
+                    e.currentTarget.querySelector('.thumbnail').classList.add('active');
+                    
+                    // Cambiar imagen principal
+                    const src = e.currentTarget.dataset.src;
+                    mainImage.src = src;
+
+                    // Abrir lightbox
+                    const lightboxItems = <?php echo json_encode($images); ?>.map(src => ({
+                        src: src,
+                        width: 1200,
+                        height: 800
+                    }));
+
+                    const options = {
+                        dataSource: lightboxItems,
+                        index: parseInt(e.currentTarget.dataset.index),
+                        showHideAnimationType: 'zoom'
+                    };
+
+                    const lightbox = new PhotoSwipe(options);
+                    lightbox.init();
+                });
+            });
+
+            // Navegación con flechas
+            scrollLeftBtn.addEventListener('click', () => {
+                thumbnailsContainer.scrollBy({ left: -300, behavior: 'smooth' });
+            });
+
+            scrollRightBtn.addEventListener('click', () => {
+                thumbnailsContainer.scrollBy({ left: 300, behavior: 'smooth' });
+            });
+
+            // Activar primera imagen por defecto
+            if (galleryItems.length > 0) {
+                galleryItems[0].querySelector('.thumbnail').classList.add('active');
+            }
+        });
+        </script>
+
+
     <?php
     } else {
         include "./backend/inc/error_alert.php";
@@ -90,15 +243,4 @@ $id = (isset($_GET['id_property_view'])) ? $_GET['id_property_view'] : 0;
 </div>
 
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        bulmaCarousel.attach('.carousel', {
-            slidesToScroll: 1,
-            slidesToShow: 1,
-            autoplay: true,
-            loop: true,
-            navigation: true,
-            pagination: true
-        });
-    });
-</script>
+

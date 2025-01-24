@@ -299,6 +299,7 @@ select {
   color: #333 !important;
 }
 
+
 .column{
   text-align: center;
 }
@@ -440,4 +441,5 @@ input, .textarea{
   mask-image: none;
 
 }
+
 

@@ -1,7 +1,13 @@
 <?php
-    require_once "./backend/php/main.php";
+    require_once "../php/main.php";
 
-    $id = limpiar_cadena($_POST['id_property']);
+    // Obtener ID de propiedad de manera segura
+    $id = isset($_POST['id_property']) ? limpiar_cadena($_POST['id_property']) : 0;
+
+    // Validar que el ID sea un número
+    if (!is_numeric($id)) {
+        $id = 0;
+    }
 
     $check_propiedad = conexion();
     $check_propiedad = $check_propiedad->query("SELECT * FROM propiedades WHERE id_property='$id'");
