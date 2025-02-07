@@ -1,8 +1,8 @@
 <?php
-	session_destroy();
-	
-	if(headers_sent()){
-		echo "<script> window.location.href='index.php?vista=login'; </script>";
-	}else{
-		header("Location: index.php?vista=login");
-	}
+session_start(); // Iniciar la sesión
+session_destroy(); // Destruir la sesión
+
+// Redirigir al login en la carpeta raíz
+header("Location: index.php?vista=login");
+exit();
+?>

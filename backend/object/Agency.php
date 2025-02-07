@@ -31,7 +31,6 @@
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
             <thead>
                 <tr class="has-text-centered">
-                    <th>Logo</th>
                     <th>Nombres</th>
                     <th>Sitio Web</th>
                     <th>Email</th>
@@ -48,7 +47,6 @@
 		foreach($datos as $rows){
 			$tabla.='
 				<tr class="has-text-centered" >
-                    <td> </td>
                     <td>'.$rows['name_agency'].'</td>
                     <td>'.$rows['website'].'</td>
                     <td>'.$rows['mail_agency'].'</td>

@@ -443,3 +443,15 @@ input, .textarea{
 }
 
 
+
+
+/* ESTILOS DE SELECT OPTION
+select:focus,
+select:hover,
+option:checked,
+option:focus { 
+  background-color: #dc8221 !important;
+}
+*/  
+
+

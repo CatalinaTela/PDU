@@ -99,7 +99,7 @@
                     <figure class="image is-4by3">
                         <img src="'.$fotoPath.'" alt="Foto" >
                     </figure>
-                </div>
+                </div>                
                 <header class="card-header">
                     <p class="card-header-title">' . strtoupper($rows['title']) . '</p>
                 </header>

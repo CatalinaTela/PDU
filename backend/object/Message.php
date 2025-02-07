@@ -2,16 +2,22 @@
 // Conexión a la base de datos
 require_once './backend/php/main.php';
 
-//Obtener listado de inmobiliarias
-$conexion=conexion();
+// Incluir PHPMailer
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require '././assets/src/Exception.php';
+require '././assets/src/PHPMailer.php';
+require '././assets/src/SMTP.php';
+
+// Obtener listado de inmobiliarias
+$conexion = conexion();
 $query_inmobiliarias = $conexion->prepare("SELECT id_agency, name_agency, mail_agency FROM inmobiliarias");
 $query_inmobiliarias->execute();
 $inmobiliarias = $query_inmobiliarias->fetchAll(PDO::FETCH_ASSOC);
 
-
 // Verificar si se envió el formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    
     // Capturar y limpiar los datos del formulario
     $name = limpiar_cadena($_POST['name'] ?? '');
     $phone = limpiar_cadena($_POST['phone'] ?? '');
@@ -27,7 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         // Guardar en la base de datos
-        $conexion = conexion();
         $query = $conexion->prepare("
             INSERT INTO mensajes_contacto (name, phone, email, subject, message) 
             VALUES (:name, :phone, :email, :subject, :message)
@@ -39,9 +44,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $query->bindParam(':message', $message);
 
         if ($query->execute()) {
-            $success = "Mensaje enviado con éxito.";
+            $success = "Mensaje guardado con éxito.";
+
+            // Enviar correo con PHPMailer
+            $mail = new PHPMailer(true);
+
+            try {
+                // Configuración del servidor SMTP
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com'; // Servidor SMTP de Gmail
+                $mail->SMTPAuth = true;
+                $mail->Username = 'tela.catalina@gmail.com'; // Tu correo
+                $mail->Password = 'oqde ljzb wmuh bvvj'; // Tu contraseña
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Habilitar TLS
+                $mail->Port = 587; // Puerto SMTP
+
+                // Destinatarios
+                $mail->setFrom('tela.catalina@gmail.com', 'Inmobiliaria Mail');
+                $mail->addAddress('tela.catalina@gmail.com'); // Correo de destino
+
+                // Contenido del correo
+                $mail->isHTML(true);
+                $mail->Subject = 'Nuevo mensaje de contacto';
+                $mail->Body = "
+                    <h1>Nuevo mensaje de contacto</h1>
+                    <p><strong>Nombre:</strong> $name</p>
+                    <p><strong>Teléfono:</strong> $phone</p>
+                    <p><strong>Email:</strong> $email</p>
+                    <p><strong>Asunto:</strong> $subject</p>
+                    <p><strong>Mensaje:</strong> $message</p>
+                ";
+
+                $mail->send();
+                $success .= " Se ha enviado un correo con la consulta.";
+            } catch (Exception $e) {
+                $errors[] = "Error al enviar el correo: {$mail->ErrorInfo}";
+            }
         } else {
-            $errors[] = "Ocurrió un error al enviar el mensaje. Inténtalo de nuevo.";
+            $errors[] = "Ocurrió un error al guardar el mensaje. Inténtalo de nuevo.";
         }
     }
 }

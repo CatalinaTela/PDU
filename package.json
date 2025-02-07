@@ -1,6 +1,9 @@
 {
   "dependencies": {
+    "body-parser": "^1.20.3",
     "bulma": "^1.0.3",
-    "bulma-carousel": "^4.0.24"
+    "bulma-carousel": "^4.0.24",
+    "express": "^4.21.2",
+    "nodemailer": "^6.10.0"
   }
 }

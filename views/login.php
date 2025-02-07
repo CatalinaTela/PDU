@@ -16,10 +16,12 @@
 		    	<input class="input" type="password" name="login_clave" pattern="[a-zA-Z0-9$@.-]{4,100}" maxlength="100"  >
 		  	</div>
 		</div>
-
-		<p class="has-text-centered mb-4 mt-3">
-			<button type="submit" class="button is-info is-rounded">Iniciar sesion</button>
-		</p>
+		<div class="columns is-centered">
+			<div class="buttons is-centered mt-6">
+				<button type="submit" class="button is-info is-rounded">Iniciar sesión</button>
+				<a href="index.php?vista=registro_publico" class="button is-info is-rounded ">Regístrate</a>
+			</div>
+		</div>
 
 		<?php
 			if(isset($_POST['login_email']) && isset($_POST['login_clave'])){
