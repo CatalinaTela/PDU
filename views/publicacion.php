@@ -19,13 +19,15 @@ $id = (isset($_GET['id_property_view'])) ? $_GET['id_property_view'] : 0;
         $datos = $check_propiedad->fetch();
         $images = json_decode($datos['picture'], true) ?: [];
         $num_foto = isset($_GET['num_foto']) ? $_GET['num_foto'] : $images[0];
+        $latitud = $datos['latitud'];
+        $longitud = $datos['longitud'];
     ?>
 
     <div class="form-rest mb-6 mt-6"></div>
     <form action="./backend/object/Publication.php" method="POST">
         <div class="columns is-multiline is-mobile">
                 <div class="column is-half">
-                    <div class="box">
+                    <div class="box" >
                         <h2 class="title has-text-centered"><?php echo htmlspecialchars($datos['title']); ?></h2>
                         <p><strong>Ubicación:</strong> <?php echo htmlspecialchars($datos['ubication']); ?></p>
                         <p><strong>Descripción:</strong> <?php echo htmlspecialchars($datos['description']); ?></p>
@@ -45,10 +47,45 @@ $id = (isset($_GET['id_property_view'])) ? $_GET['id_property_view'] : 0;
                         </p>
                     </div>
                 </div>    
+
+
+                
                 <div class="column is-half">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3476.9558109071627!2d-66.34241857118006!3d-33.28432508428671!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2sar!4v1645188876080!5m2!1ses-419!2sar" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    <!-- Mapa de OpenStreetMap -->
+                    <div id="map" style="height: 450px; width: 100%;"></div>
                 </div>
-        <!-- Galeria de imagenes -->
+
+                <!-- Script para OpenStreetMap -->
+                <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+                <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+                <script>
+                    // Coordenadas de la propiedad
+                    var latitud = <?php echo $latitud ?? 0; ?>;
+                    var longitud = <?php echo $longitud ?? 0; ?>;
+
+                    // Inicializar el mapa
+                    var map = L.map('map').setView([latitud, longitud], 15);
+
+                    // Añadir capa de OpenStreetMap
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map);
+
+                    // Añadir marcador
+                    if (latitud != 0 && longitud != 0) {
+                        L.marker([latitud, longitud]).addTo(map)
+                            .bindPopup('<?php echo htmlspecialchars($datos['title']); ?>')
+                            .openPopup();
+                    } else {
+                        alert('Ubicación no válida.');
+                    }
+                </script>
+            <?php
+            
+            ?>
+       
+       
+                <!-- Galeria de imagenes -->
         <div class="gallery-container">
             <h2 class="title">Galería de Imágenes</h2>
             

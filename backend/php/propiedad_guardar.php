@@ -11,7 +11,20 @@
 	$precio=limpiar_cadena($_POST['value']);
     $tipo=limpiar_cadena($_POST['id_type']);
 	$operacion=limpiar_cadena($_POST['id_operation']);
+    $latitud = limpiar_cadena($_POST['latitud']);
+    $longitud = limpiar_cadena($_POST['longitud']);
 
+
+    // Validar coordenadas
+    if (!is_numeric($latitud) || !is_numeric($longitud)) {
+        echo '
+            <div class="notification is-danger is-light">
+                <strong>¡Ocurrió un error inesperado!</strong><br>
+                Las coordenadas no son válidas.
+            </div>
+        ';
+        exit();
+    }
 
 	/*== Verificando campos obligatorios ==*/
     if($titulo=="" || $descripcion=="" || $ubicacion=="" || $precio=="" || $tipo=="" || $operacion==""){
@@ -132,7 +145,7 @@
 
 	/*== Guardando en la base de datos ==*/
     $guardar_propiedad=conexion();
-    $guardar_propiedad=$guardar_propiedad->prepare("INSERT INTO propiedades(title,description,observations,ubication,value,picture,id_type,id_operation) VALUES(:titulo,:descripcion,:observacion,:ubicacion,:precio,:picture,:tipo,:operacion)");
+    $guardar_propiedad=$guardar_propiedad->prepare("INSERT INTO propiedades(title,description,observations,ubication,value,picture,id_type,id_operation,latitud,longitud) VALUES(:titulo,:descripcion,:observacion,:ubicacion,:precio,:picture,:tipo,:operacion,:latitud,:longitud)");
 
     $marcadores=[
         ":titulo"=>$titulo,
@@ -142,7 +155,9 @@
         ":precio"=>$precio,
         ":picture"=>$pictures_serialized,
         ":tipo"=>$tipo,
-        ":operacion"=>$operacion
+        ":operacion"=>$operacion,
+        ":latitud"=>$latitud,
+        ":longitud"=>$longitud
     ];
 
     $guardar_propiedad->execute($marcadores);

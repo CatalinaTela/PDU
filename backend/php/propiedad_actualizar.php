@@ -27,10 +27,12 @@
     $precio = limpiar_cadena($_POST['value']) ?: $datos['value'];
     $tipo = limpiar_cadena($_POST['id_type']) ?: $datos['id_type'];
     $operacion = limpiar_cadena($_POST['id_operation']) ?: $datos['id_operation'];
+    $latitud = limpiar_cadena($_POST['latitud'])?: $datos['latitud'];
+    $longitud = limpiar_cadena($_POST['longitud'])?: $datos['longitud'];
 
     /*== Actualizando datos ==*/
     $actualizar_propiedad = conexion();
-    $actualizar_propiedad = $actualizar_propiedad->prepare("UPDATE propiedades SET title = :titulo, description = :descripcion, observations = :observacion, ubication = :ubicacion, value = :precio, id_type = :tipo, id_operation = :operacion WHERE id_property = :id");
+    $actualizar_propiedad = $actualizar_propiedad->prepare("UPDATE propiedades SET title = :titulo, description = :descripcion, observations = :observacion, ubication = :ubicacion, value = :precio, id_type = :tipo, id_operation = :operacion, latitud = :latitud, longitud = :longitud WHERE id_property = :id");
 
     $marcadores = [
         ":titulo" => $titulo,
@@ -40,7 +42,9 @@
         ":precio" => $precio,
         ":tipo" => $tipo,
         ":operacion" => $operacion,
-        ":id" => $id
+        ":id" => $id,
+        "latitud" => $latitud,
+        "longitud" => $longitud
     ];
 
     if($actualizar_propiedad->execute($marcadores)){

@@ -20,7 +20,7 @@
 		  	</div>
 		  	<div class="column">
 		    	<div class="control">
-                                        <label>Ubicación</label>
+                    <label>Ubicación</label>
 				  	<input class="input" type="text" name="ubication" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,$#\-\/ ]{1,700}" maxlength="70"  >
 				</div>
 		  	</div>
@@ -89,7 +89,7 @@
 		  	</div>
 		</div>
 		<div class="columns">
-			<div class="column-left">
+			<div class="column is-half ">
 				<label>Fotos o imágenes del producto</label><br>
 				<div class="file is-small has-name">
 				  	<label class="file-label">
@@ -101,9 +101,17 @@
 				  	</label>
 				</div>
 			</div>
-		</div>
+			<div class="column is-one-quarter">
+				<label for="latitud">Latitud</label>
+				<input class="input" type="text" name="latitud" pattern="^-?\d{1,2}\.\d{1,6}$" placeholder="Ej: -34.603722" required>			</div>
+			<div class="column is-one-quarter">
+				<label for="longitud">Longitud</label>
+				<input class="input" type="text" name="longitud" pattern="^-?\d{1,3}\.\d{1,6}$" placeholder="Ej: -58.381592" required>			</div>
+			</div>
 		<p class="has-text-centered">
 			<button type="submit" class="button is-info is-rounded">Guardar</button>
 		</p>
 	</form>
 </div>
+
+

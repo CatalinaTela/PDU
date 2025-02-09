@@ -69,6 +69,22 @@
 
         <div class="columns">
             <div class="column">
+                <div class="control">
+                    <label for="latitud">Latitud</label>
+                    <input class="input" type="text" name="latitud" pattern="^-?\d{1,2}\.\d{1,6}$" placeholder="Ej: -34.603722"  value="<?php echo $datos['latitud']; ?>"required>			
+                </div>
+            </div>
+            <div class="column">
+                <div class="control">
+                    <label for="longitud">Longitud</label>
+                    <input class="input" type="text" name="longitud" pattern="^-?\d{1,3}\.\d{1,6}$" placeholder="Ej: -58.381592" value="<?php echo $datos['longitud']; ?>" required>			</div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="columns">
+            <div class="column">
                 <label>Tipo</label><br>
                 <div class="select is-rounded">
                     <select name="id_type">

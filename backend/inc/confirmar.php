@@ -1,5 +1,5 @@
 <?php
-require_once "main.php";
+require_once "../php/main.php";
 
 if (isset($_GET['token'])) {
     $token = limpiar_cadena($_GET['token']);
@@ -30,12 +30,17 @@ if (isset($_GET['token'])) {
             $query_delete->bindParam(':id', $usuario['id']);
             $query_delete->execute();
 
+            //Mensaje de confirmacion
             echo '
                 <div class="notification is-info is-light">
                     <strong>¡Registro confirmado!</strong><br>
                     Ahora puedes iniciar sesión.
                 </div>
             ';
+
+            //Redirigir al login
+            header("Location: http://localhost/PDU/index.php?=login");
+            exit();
         } else {
             echo '
                 <div class="notification is-danger is-light">

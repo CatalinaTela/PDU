@@ -3,9 +3,9 @@ require_once "main.php";
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'libs/PHPMailer/src/Exception.php';
-require 'libs/PHPMailer/src/PHPMailer.php';
-require 'libs/PHPMailer/src/SMTP.php';
+require '../../assets/src/Exception.php';
+require '../../assets/src/PHPMailer.php';
+require '../../assets/src/SMTP.php';
 
 // Almacenando datos
 $nombre = limpiar_cadena($_POST['usuario_nombre']);
@@ -131,13 +131,13 @@ if ($guardar_usuario->execute($marcadores)) {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'tucorreo@gmail.com';
-        $mail->Password = 'tucontraseña';
+        $mail->Username = 'tela.catalina@gmail.com';
+        $mail->Password = 'oqde ljzb wmuh bvvj';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
         // Destinatarios
-        $mail->setFrom('tucorreo@gmail.com', 'Nombre del Remitente');
+        $mail->setFrom('tela.catalina@gmail.com', 'InmobiliariaLogin');
         $mail->addAddress($email); // Correo del usuario
 
         // Contenido del correo
@@ -146,7 +146,7 @@ if ($guardar_usuario->execute($marcadores)) {
         $mail->Body = "
             <h1>¡Gracias por registrarte!</h1>
             <p>Por favor, confirma tu registro haciendo clic en el siguiente enlace:</p>
-            <a href='http://tudominio.com/confirmar.php?token=$token'>Confirmar registro</a>
+            <a href='http://localhost/PDU/backend/inc/confirmar.php?token=$token'>Confirmar registro</a>
         ";
 
         $mail->send();
