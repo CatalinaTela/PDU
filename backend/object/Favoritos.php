@@ -1,71 +1,25 @@
-<?php  
+<?php
     $inicio = ($pagina > 0) ? (($pagina * $registros) - $registros) : 0;
     $cuadricula = ""; 
 
     $campos = "propiedades.id_property, propiedades.title, propiedades.description, propiedades.observations, propiedades.ubication, propiedades.value, propiedades.picture, propiedades.id_operation, propiedades.id_type, operacion_inmobiliaria.id_operation, operacion_inmobiliaria.operation_name, tipo_propiedad.id_type, tipo_propiedad.type_name";
-    
-
 
     $consulta_datos = "SELECT $campos 
     FROM propiedades 
     INNER JOIN operacion_inmobiliaria ON propiedades.id_operation = operacion_inmobiliaria.id_operation 
     INNER JOIN tipo_propiedad ON propiedades.id_type = tipo_propiedad.id_type 
-    WHERE 1=1"; // El "1=1" facilita agregar condiciones dinámicas
+    INNER JOIN favoritos ON propiedades.id_property = favoritos.id_property 
+    WHERE favoritos.id_user = {$_SESSION['id']}";
 
     $consulta_total = "SELECT COUNT(propiedades.id_property) 
-        FROM propiedades 
-        INNER JOIN operacion_inmobiliaria ON propiedades.id_operation = operacion_inmobiliaria.id_operation 
-        INNER JOIN tipo_propiedad ON propiedades.id_type = tipo_propiedad.id_type 
-        WHERE 1=1"; // El "1=1" facilita agregar condiciones dinámicas
-
-    $id_operation = isset($_GET['id_operation']) ? intval($_GET['id_operation']) : 0;
-    $id_type = isset($_GET['id_type']) ? intval($_GET['id_type']) : 0;
-
-    // Condiciones dinámicas
-    if (!empty($busqueda)) {
-    $consulta_datos .= " AND (propiedades.title LIKE '%$busqueda%' 
-                OR propiedades.description LIKE '%$busqueda%' 
-                OR propiedades.observations LIKE '%$busqueda%' 
-                OR propiedades.ubication LIKE '%$busqueda%' 
-                OR propiedades.value LIKE '%$busqueda%' 
-                OR tipo_propiedad.type_name LIKE '%$busqueda%' 
-                OR operacion_inmobiliaria.operation_name LIKE '%$busqueda%')";
-
-    $consulta_total .= " AND (propiedades.title LIKE '%$busqueda%' 
-                    OR propiedades.description LIKE '%$busqueda%' 
-                    OR propiedades.observations LIKE '%$busqueda%' 
-                    OR propiedades.ubication LIKE '%$busqueda%' 
-                    OR propiedades.value LIKE '%$busqueda%' 
-                    OR tipo_propiedad.type_name LIKE '%$busqueda%' 
-                    OR operacion_inmobiliaria.operation_name LIKE '%$busqueda%')";
-    }
-
-    if (isset($id_operation) && $id_operation > 0) {
-    $consulta_datos .= " AND propiedades.id_operation = $id_operation";
-    $consulta_total .= " AND propiedades.id_operation = $id_operation";
-    }
-
-    if (isset($id_type) && $id_type > 0) {
-    $consulta_datos .= " AND propiedades.id_type = $id_type";
-    $consulta_total .= " AND propiedades.id_type = $id_type";
-    }
-
-    // Agregar filtro de precio
-    $price_min = isset($_GET['price_min']) ? floatval($_GET['price_min']) : 0;
-    $price_max = isset($_GET['price_max']) ? floatval($_GET['price_max']) : 300000;
-
-    // Agregar condiciones a las consultas
-    if ($price_min > 0 || $price_max < 300000) {
-        $consulta_datos .= " AND propiedades.value BETWEEN $price_min AND $price_max";
-        $consulta_total .= " AND propiedades.value BETWEEN $price_min AND $price_max";
-    }
-
+    FROM propiedades 
+    INNER JOIN favoritos ON propiedades.id_property = favoritos.id_property 
+    WHERE favoritos.id_user = {$_SESSION['id']}";
 
     // Ordenar y limitar resultados
     $consulta_datos .= " ORDER BY propiedades.title ASC LIMIT $inicio, $registros";
 
-
-    //Conexion
+    // Conexion
     $conexion = conexion();
 
     $datos = $conexion->query($consulta_datos);
@@ -113,18 +67,17 @@
                 </div>
                 <footer class="card-footer">
                     <a href="index.php?vista=publicacion&id_property_view=' . $rows['id_property'] . '" class="card-footer-item">Ver más</a>
-                    <a href="index.php?vista=guardar_favorito&id_property=' . $rows['id_property'] . '" class="card-footer-item">Guardar</a>
-                </footer>  
+                    <a href="index.php?vista=eliminar_favorito&id_property=' . $rows['id_property'] . '" class="card-footer-item">Eliminar</a>
+                </footer>    
             </div>
         </div>';
     }
     
     $cuadricula .= '</div>'; // Cierre de las columnas
-    
 
     // Mostrar mensaje si no hay registros
     if ($total < 1) {
-        $cuadricula = '<p class="has-text-centered">No hay registros en el sistema</p>';
+        $cuadricula = '<p class="has-text-centered">No tienes propiedades favoritas</p>';
     } elseif ($total >= 1 && $pagina <= $Npaginas) {
         $cuadricula .= '<p class="has-text-right">Mostrando propiedades <strong>' . $pag_inicio . '</strong> al <strong>' . $pag_final . '</strong> de un <strong>total de ' . $total . '</strong></p>';
     }

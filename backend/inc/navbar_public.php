@@ -55,7 +55,10 @@
                             Iniciar sesión
                         </a>
                     <?php else: ?>
-                        <!-- Mostrar "Cerrar sesión" si hay sesión activa -->
+                        <!-- Mostrar "Cerrar sesión" y "Favoritos" si hay sesión activa -->
+                        <a href="index.php?vista=favoritos" class="button is-primary is-rounded">
+                            Favoritos
+                        </a>
                         <a href="index.php?vista=logout" class="button is-danger is-rounded">
                             Cerrar sesión
                         </a>
